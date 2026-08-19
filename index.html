@@ -1,0 +1,482 @@
+<title>Créer Des Sites Avec l'IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050509;
+  --surface:#0c0c16;
+  --surface-2:#111120;
+  --surface-3:#15152a;
+  --border:rgba(168,85,247,.16);
+  --border-strong:rgba(168,85,247,.38);
+  --violet:#7C3AED;
+  --mauve:#A855F7;
+  --lilac:#C084FC;
+  --ink:#F8FAFC;
+  --slate:#9AA3BE;
+  --slate-dim:#5c6480;
+  --good:#34D399;
+  --gold:#FFD166;
+  --shadow:0 20px 60px -20px rgba(124,58,237,.35);
+  --radius:18px;
+  --font-display:'Bricolage Grotesque',system-ui,sans-serif;
+  --font-body:'Manrope',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+::selection{background:rgba(124,58,237,.4);color:#fff;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;}
+:focus-visible{outline:2px solid var(--lilac);outline-offset:2px;}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0;text-wrap:balance;letter-spacing:-.01em;}
+p{margin:0;color:var(--slate);line-height:1.65;}
+.mono{font-family:var(--font-mono);}
+img,svg{max-width:100%;}
+
+#particles{position:fixed;inset:0;z-index:0;display:block;}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%, transparent 0%, transparent 30%, rgba(5,5,9,.6) 78%, var(--bg) 100%);}
+.grid-glow{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.45;
+  background-image:linear-gradient(rgba(124,58,237,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:radial-gradient(ellipse at 50% 20%,black 0%,transparent 65%);}
+
+main{position:relative;z-index:2;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+section{padding:100px 0;}
+@media (max-width:720px){section{padding:70px 0;}.wrap{padding:0 20px;}}
+
+/* nav */
+#nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  padding:16px 28px;background:linear-gradient(180deg,rgba(5,5,9,.85),rgba(5,5,9,.5));backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:700;font-size:15px;}
+.brand-mark{width:22px;height:22px;border-radius:7px;background:conic-gradient(from 180deg,var(--violet),var(--mauve),var(--lilac),var(--violet));
+  box-shadow:0 0 14px rgba(168,85,247,.55);flex:none;}
+.nav-links{display:flex;gap:28px;font-size:13.5px;color:var(--slate);}
+.nav-links a:hover{color:var(--ink);}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;font-weight:700;cursor:pointer;border:none;
+  font-size:13.5px;letter-spacing:.01em;transition:.2s;}
+.btn-primary{background:linear-gradient(135deg,var(--violet),var(--mauve));color:#fff;padding:12px 22px;
+  box-shadow:0 16px 40px -12px rgba(168,85,247,.6);}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn-ghost{background:var(--surface-2);color:var(--ink);border:1px solid var(--border-strong);padding:11px 21px;}
+.btn-ghost:hover{background:var(--surface-3);}
+.btn-sm{padding:9px 16px;font-size:12.5px;}
+@media (max-width:760px){.nav-links{display:none;}}
+
+/* hero */
+.hero{padding:88px 0 60px;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;}
+@media (max-width:900px){.hero{grid-template-columns:1fr;padding:56px 0 30px;text-align:center;}}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--lilac);border:1px solid var(--border-strong);padding:7px 15px;border-radius:999px;
+  background:rgba(124,58,237,.08);margin-bottom:24px;}
+.hero h1{font-size:clamp(34px,5.2vw,60px);line-height:1.04;margin-bottom:18px;
+  background:linear-gradient(135deg,#fff 15%,var(--lilac) 60%,var(--mauve) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero-sub{font-family:var(--font-mono);font-size:14px;color:var(--slate);letter-spacing:.02em;margin-bottom:18px;}
+.hero-sub b{color:var(--ink);font-weight:600;}
+.hero-lede{font-size:clamp(15px,1.5vw,17.5px);max-width:52ch;margin-bottom:30px;}
+@media (max-width:900px){.hero-lede{margin-left:auto;margin-right:auto;}}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:26px;}
+@media (max-width:900px){.hero-cta{justify-content:center;}}
+.trust-row{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--font-mono);font-size:11.5px;color:var(--slate-dim);}
+@media (max-width:900px){.trust-row{justify-content:center;}}
+.trust-row span{display:flex;align-items:center;gap:6px;}
+.trust-row .dot{color:var(--good);}
+
+.hero-visual{position:relative;}
+.window{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);}
+.window-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);}
+.window-bar .dot2{width:10px;height:10px;border-radius:50%;}
+.dot2.red{background:#F87171;}.dot2.yellow{background:#F5B94E;}.dot2.green{background:#34D399;}
+.window-title{margin-left:8px;font-family:var(--font-mono);font-size:11px;color:var(--slate-dim);}
+.mock-body{display:flex;min-height:280px;}
+.mock-side{width:36%;border-right:1px solid var(--border);padding:16px;font-family:var(--font-mono);font-size:11px;color:var(--slate-dim);}
+.mock-side .grp{margin-bottom:14px;color:var(--lilac);letter-spacing:.06em;}
+.mock-side .it{padding:5px 0;}
+.mock-side .it.on{color:var(--ink);}
+.mock-main{flex:1;padding:26px 22px;display:flex;flex-direction:column;justify-content:center;gap:12px;}
+.mock-main .mk-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--lilac);text-transform:uppercase;}
+.mock-main h3{font-size:22px;background:linear-gradient(135deg,#fff,var(--lilac));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.mock-main p{font-size:12px;}
+.mock-tag{display:inline-flex;gap:6px;align-items:center;font-family:var(--font-mono);font-size:10.5px;color:var(--slate-dim);
+  border:1px solid var(--border);border-radius:999px;padding:4px 10px;width:fit-content;}
+.float-badge{position:absolute;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:12px;padding:10px 14px;
+  font-family:var(--font-mono);font-size:11px;box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;}
+.float-badge.b1{top:-16px;right:-10px;color:var(--lilac);}
+.float-badge.b2{bottom:-18px;left:-16px;color:var(--good);}
+@media (max-width:900px){.float-badge{display:none;}}
+
+/* section heads */
+.section-head{max-width:640px;margin:0 auto 46px;text-align:center;}
+.section-head .eyebrow{margin-bottom:16px;}
+.section-head h2{font-size:clamp(26px,3.4vw,38px);margin-bottom:14px;}
+.section-head p{font-size:15px;}
+
+/* cards */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media (max-width:900px){.grid3,.grid4{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:600px){.grid3,.grid4,.grid2{grid-template-columns:1fr;}}
+.card{background:linear-gradient(180deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+.card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;
+  background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(192,132,252,.12));border:1px solid var(--border-strong);margin-bottom:14px;}
+.card h3{font-size:15.5px;margin-bottom:8px;color:var(--ink);}
+.card p{font-size:13.5px;}
+
+/* problem / compare */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media (max-width:720px){.compare{grid-template-columns:1fr;}}
+.compare-col{border-radius:16px;padding:26px 24px;border:1px solid var(--border);}
+.compare-col.bad{background:rgba(248,113,113,.04);border-color:rgba(248,113,113,.22);}
+.compare-col.good{background:rgba(52,211,153,.05);border-color:rgba(52,211,153,.25);}
+.compare-tag{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.06em;font-weight:700;display:block;margin-bottom:16px;}
+.compare-col.bad .compare-tag{color:#F87171;}
+.compare-col.good .compare-tag{color:var(--good);}
+.compare-col ul{margin:0;padding:0;list-style:none;display:grid;gap:11px;}
+.compare-col li{font-size:14px;color:var(--ink);padding-left:22px;position:relative;}
+.compare-col.bad li::before{content:'✕';position:absolute;left:0;color:#F87171;font-size:12px;}
+.compare-col.good li::before{content:'✓';position:absolute;left:0;color:var(--good);font-size:12px;}
+
+/* curriculum */
+.curr-list{display:grid;gap:12px;}
+.curr-item{display:flex;align-items:center;gap:18px;border:1px solid var(--border);border-radius:14px;padding:16px 20px;
+  background:var(--surface-2);transition:.2s;}
+.curr-item:hover{border-color:var(--border-strong);background:var(--surface-3);}
+.curr-num{font-family:var(--font-mono);font-size:12px;color:var(--lilac);flex:none;width:34px;}
+.curr-icon{font-size:20px;flex:none;}
+.curr-body{flex:1;}
+.curr-body h4{font-size:14.5px;color:var(--ink);margin-bottom:2px;}
+.curr-body p{font-size:12.5px;}
+.curr-pages{flex:none;font-family:var(--font-mono);font-size:11px;color:var(--slate-dim);}
+
+/* features checklist */
+.feat-list{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:700px){.feat-list{grid-template-columns:1fr;}}
+.feat-item{display:flex;align-items:flex-start;gap:12px;font-size:14.5px;color:var(--ink);}
+.feat-item .fi{flex:none;width:22px;height:22px;border-radius:7px;background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.4);
+  color:var(--good);display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:1px;}
+
+/* pricing */
+.price-card{max-width:440px;margin:0 auto;border:1px solid var(--border-strong);border-radius:22px;
+  background:linear-gradient(180deg,rgba(124,58,237,.14),var(--surface-2));padding:38px 34px;text-align:center;box-shadow:var(--shadow);}
+.price-card .eyebrow{margin-bottom:18px;}
+.price-row{display:flex;align-items:baseline;justify-content:center;gap:12px;flex-wrap:wrap;margin:6px 0 4px;}
+.price-old{font-family:var(--font-mono);font-size:19px;color:var(--slate-dim);text-decoration:line-through;text-decoration-color:rgba(148,163,184,.5);}
+.price-amount{font-family:var(--font-display);font-size:52px;font-weight:800;color:var(--ink);}
+.price-amount span{font-size:16px;color:var(--slate-dim);font-family:var(--font-mono);font-weight:500;}
+.discount-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--violet),var(--mauve));
+  color:#fff;font-family:var(--font-mono);font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;
+  box-shadow:0 8px 22px -8px rgba(168,85,247,.7);margin-bottom:14px;}
+.price-note{font-size:12.5px;color:var(--slate-dim);margin-bottom:24px;}
+.price-save{font-size:12.5px;color:var(--good);margin-bottom:6px;font-weight:600;}
+.price-card ul{list-style:none;margin:0 0 28px;padding:0;display:grid;gap:10px;text-align:left;}
+.price-card li{font-size:13.5px;color:var(--ink);padding-left:22px;position:relative;}
+.price-card li::before{content:'✓';position:absolute;left:0;color:var(--good);}
+.price-card .btn-primary{width:100%;justify-content:center;padding:15px;font-size:14.5px;}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto;display:grid;gap:12px;}
+details{border:1px solid var(--border);border-radius:14px;background:var(--surface-2);overflow:hidden;}
+details[open]{border-color:var(--border-strong);}
+summary{list-style:none;cursor:pointer;padding:18px 22px;font-size:14.5px;font-weight:600;color:var(--ink);
+  display:flex;justify-content:space-between;align-items:center;gap:12px;}
+summary::-webkit-details-marker{display:none;}
+summary::after{content:'+';font-family:var(--font-mono);font-size:18px;color:var(--lilac);transition:.25s;flex:none;}
+details[open] summary::after{transform:rotate(45deg);}
+.faq-a{padding:0 22px 20px;font-size:13.5px;color:var(--slate);max-width:64ch;}
+
+/* final cta */
+.final-cta{border-radius:28px;padding:64px 40px;text-align:center;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,rgba(124,58,237,.22),rgba(5,5,9,.4) 60%);border:1px solid var(--border-strong);}
+.final-cta h2{font-size:clamp(26px,3.6vw,40px);margin-bottom:16px;}
+.final-cta p{max-width:50ch;margin:0 auto 30px;font-size:15px;}
+
+footer{border-top:1px solid var(--border);padding:36px 0;text-align:center;}
+footer p{font-size:12px;color:var(--slate-dim);}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);}
+.reveal.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;transform:none;}}
+</style>
+
+<div id="bgwrap">
+  <canvas id="particles"></canvas>
+  <div class="grid-glow"></div>
+  <div class="vignette"></div>
+</div>
+
+<main>
+  <nav id="nav">
+    <div class="brand"><span class="brand-mark"></span>IA&nbsp;/&nbsp;Web</div>
+    <div class="nav-links">
+      <a href="#programme">Programme</a>
+      <a href="#inclus">Contenu</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="#offre" class="btn btn-primary btn-sm">Obtenir la formation</a>
+  </nav>
+
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <span class="eyebrow reveal">✦ Formation numérique premium</span>
+        <h1 class="reveal">Créer des sites web avec l'IA</h1>
+        <div class="hero-sub reveal"><b>Claude</b> · <b>Visual Studio Code</b> · <b>Claude Code</b></div>
+        <p class="hero-lede reveal">42 pages interactives et 100% pratiques pour transformer une idée en site professionnel en ligne — même si vous n'avez jamais écrit une ligne de code.</p>
+        <div class="hero-cta reveal">
+          <a href="#offre" class="btn btn-primary">Obtenir la formation — 180&nbsp;€ →</a>
+          <a href="#programme" class="btn btn-ghost">Voir le programme</a>
+        </div>
+        <div class="trust-row reveal">
+          <span><span class="dot">✓</span> -82% pour le lancement</span>
+          <span><span class="dot">✓</span> Accès immédiat</span>
+          <span><span class="dot">✓</span> À votre rythme</span>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="float-badge b1">🚀 42 pages</div>
+        <div class="window">
+          <div class="window-bar"><span class="dot2 red"></span><span class="dot2 yellow"></span><span class="dot2 green"></span><span class="window-title">créer-des-sites-avec-lia.formation</span></div>
+          <div class="mock-body">
+            <div class="mock-side">
+              <div class="grp">SOMMAIRE</div>
+              <div class="it">01 · Comprendre l'IA</div>
+              <div class="it">02 · Installer l'environnement</div>
+              <div class="it on">03 · Claude Code</div>
+              <div class="it">04 · Premier site</div>
+              <div class="it">05 · Design premium</div>
+              <div class="it">06 · Animations</div>
+              <div class="it">…</div>
+            </div>
+            <div class="mock-main">
+              <span class="mk-eyebrow">Partie 03 · Claude Code</span>
+              <h3>Installer Node.js &amp; connecter Claude Code</h3>
+              <p>Démo animée pas-à-pas, terminal inclus, prompts copiables en un clic.</p>
+              <span class="mock-tag">▶ Démo interactive incluse</span>
+            </div>
+          </div>
+        </div>
+        <div class="float-badge b2">✓ Prompts copiables</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="probleme">
+      <div class="section-head reveal">
+        <span class="eyebrow">Le problème</span>
+        <h2>Vous avez déjà essayé de créer un site vous-même ?</h2>
+        <p>Entre les tutoriels trop techniques et les templates génériques, la plupart des gens abandonnent avant même d'avoir commencé.</p>
+      </div>
+      <div class="grid3 reveal">
+        <div class="card"><div class="card-icon">⏳</div><h3>Apprendre à coder prend des mois</h3><p>Vous n'avez ni le temps ni l'envie de suivre une formation de développeur classique.</p></div>
+        <div class="card"><div class="card-icon">💸</div><h3>Un développeur coûte cher</h3><p>Faire appel à une agence pour un simple site vitrine peut vite dépasser le budget.</p></div>
+        <div class="card"><div class="card-icon">🤖</div><h3>L'IA existe, mais personne n'explique comment</h3><p>Vous avez déjà utilisé Claude, mais vos prompts donnent des résultats vagues ou génériques.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="transformation">
+      <div class="section-head reveal">
+        <span class="eyebrow">La méthode</span>
+        <h2>Ce que cette formation change concrètement</h2>
+      </div>
+      <div class="compare reveal">
+        <div class="compare-col bad">
+          <span class="compare-tag">✕ Avant</span>
+          <ul>
+            <li>Des prompts flous qui donnent des sites génériques</li>
+            <li>Aucune méthode pour structurer un vrai projet</li>
+            <li>Un design qui ressemble à un template gratuit</li>
+            <li>Pas d'idée de comment mettre le site en ligne</li>
+          </ul>
+        </div>
+        <div class="compare-col good">
+          <span class="compare-tag">✓ Après cette formation</span>
+          <ul>
+            <li>Une méthode de prompt claire, réutilisable pour chaque projet</li>
+            <li>Un cahier des charges généré avec Claude en quelques minutes</li>
+            <li>Un design premium : palette, typographie, animations soignées</li>
+            <li>Un site publié en ligne avec GitHub et Vercel</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="programme">
+      <div class="section-head reveal">
+        <span class="eyebrow">Le programme</span>
+        <h2>10 parties, du premier prompt au premier client</h2>
+        <p>Une progression pensée pour un débutant complet : chaque partie s'appuie sur la précédente.</p>
+      </div>
+      <div class="curr-list reveal">
+        <div class="curr-item"><span class="curr-num">01</span><span class="curr-icon">🧠</span><div class="curr-body"><h4>Comprendre l'IA</h4><p>Ce que Claude peut réellement faire pour créer un site.</p></div><span class="curr-pages">4 pages</span></div>
+        <div class="curr-item"><span class="curr-num">02</span><span class="curr-icon">🧭</span><div class="curr-body"><h4>Installer son environnement</h4><p>VS Code, terminal, et les bases pour démarrer sereinement.</p></div><span class="curr-pages">4 pages</span></div>
+        <div class="curr-item"><span class="curr-num">03</span><span class="curr-icon">⌨️</span><div class="curr-body"><h4>Claude Code</h4><p>Installer, connecter et parler efficacement à Claude Code.</p></div><span class="curr-pages">5 pages</span></div>
+        <div class="curr-item"><span class="curr-num">04</span><span class="curr-icon">💻</span><div class="curr-body"><h4>Créer son premier site</h4><p>Structurer un projet et générer sa première page.</p></div><span class="curr-pages">4 pages</span></div>
+        <div class="curr-item"><span class="curr-num">05</span><span class="curr-icon">🎨</span><div class="curr-body"><h4>Designer un site premium</h4><p>Palette, typographie, Hero — et un prompt pour des photos ultra réalistes.</p></div><span class="curr-pages">5 pages</span></div>
+        <div class="curr-item"><span class="curr-num">06</span><span class="curr-icon">✨</span><div class="curr-body"><h4>Animations et effets</h4><p>Particules, scroll, arrière-plans image/vidéo/animation.</p></div><span class="curr-pages">4 pages</span></div>
+        <div class="curr-item"><span class="curr-num">07</span><span class="curr-icon">🛠️</span><div class="curr-body"><h4>Améliorer avec Claude</h4><p>Corriger les bugs, le responsive et les performances.</p></div><span class="curr-pages">4 pages</span></div>
+        <div class="curr-item"><span class="curr-num">08</span><span class="curr-icon">🚀</span><div class="curr-body"><h4>Créer un vrai projet</h4><p>Le prompt complet, modèle, pour lancer n'importe quel site.</p></div><span class="curr-pages">4 pages</span></div>
+        <div class="curr-item"><span class="curr-num">09</span><span class="curr-icon">🌍</span><div class="curr-body"><h4>Mettre le site en ligne</h4><p>GitHub, Vercel, nom de domaine.</p></div><span class="curr-pages">3 pages</span></div>
+        <div class="curr-item"><span class="curr-num">10</span><span class="curr-icon">💼</span><div class="curr-body"><h4>Devenir créateur avec l'IA</h4><p>Trouver ses clients, fixer ses tarifs, livrer un projet.</p></div><span class="curr-pages">5 pages</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="inclus">
+      <div class="section-head reveal">
+        <span class="eyebrow">Ce qui est inclus</span>
+        <h2>Tout ce qu'il faut, rien de superflu</h2>
+      </div>
+      <div class="feat-list reveal">
+        <div class="feat-item"><span class="fi">✓</span>42 pages interactives avec sommaire et navigation</div>
+        <div class="feat-item"><span class="fi">✓</span>Démo animée pas-à-pas : Node.js + connexion Claude Code</div>
+        <div class="feat-item"><span class="fi">✓</span>Plus de 15 prompts prêts à copier-coller</div>
+        <div class="feat-item"><span class="fi">✓</span>Palettes, typographie et composants de design réutilisables</div>
+        <div class="feat-item"><span class="fi">✓</span>Lexique complet du vocabulaire web design, traduit en français</div>
+        <div class="feat-item"><span class="fi">✓</span>Checklist complète avant livraison client</div>
+        <div class="feat-item"><span class="fi">✓</span>Méthode pour trouver ses premiers clients et fixer ses tarifs</div>
+        <div class="feat-item"><span class="fi">✓</span>Compatible Windows et Mac</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="offre">
+      <div class="section-head reveal">
+        <span class="eyebrow">L'offre</span>
+        <h2>Une offre de lancement, à durée limitée</h2>
+      </div>
+      <div class="price-card reveal">
+        <span class="eyebrow">Formation complète</span>
+        <span class="discount-badge">-82% · Offre de lancement</span>
+        <div class="price-row">
+          <span class="price-old">999,99&nbsp;€</span>
+          <div class="price-amount">180&nbsp;€ <span>paiement unique</span></div>
+        </div>
+        <p class="price-save">Vous économisez 819,99&nbsp;€</p>
+        <p class="price-note">Accès immédiat après paiement · Aucun abonnement</p>
+        <ul>
+          <li>Les 42 pages de la formation</li>
+          <li>Tous les prompts copiables</li>
+          <li>La démo interactive Node.js / Claude Code</li>
+          <li>Le lexique complet du web design</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Obtenir la formation →</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section id="faq">
+      <div class="section-head reveal">
+        <span class="eyebrow">Questions fréquentes</span>
+        <h2>Tout ce que vous vous demandez encore</h2>
+      </div>
+      <div class="faq reveal">
+        <details>
+          <summary>Faut-il déjà savoir coder pour commencer ?</summary>
+          <p class="faq-a">Non. La formation part de zéro et explique chaque terme technique dès qu'il apparaît. Vous apprenez à guider l'IA, pas à mémoriser du code.</p>
+        </details>
+        <details>
+          <summary>Ça fonctionne sur Mac et sur Windows ?</summary>
+          <p class="faq-a">Oui, tous les outils utilisés (VS Code, Node.js, Claude Code) existent sur les deux systèmes, et la formation couvre les deux.</p>
+        </details>
+        <details>
+          <summary>Combien de temps pour terminer la formation ?</summary>
+          <p class="faq-a">Comptez une semaine en avançant un peu chaque jour, mais vous progressez entièrement à votre rythme, sans date limite.</p>
+        </details>
+        <details>
+          <summary>Est-ce que je peux vraiment créer des sites pour des clients après ça ?</summary>
+          <p class="faq-a">La dernière partie est justement conçue pour ça : trouver ses premiers clients, structurer une offre et fixer ses tarifs.</p>
+        </details>
+        <details>
+          <summary>Ai-je besoin d'un abonnement payant à Claude ?</summary>
+          <p class="faq-a">Claude Code nécessite un abonnement Claude Pro ou supérieur. La formation explique où cliquer pour relier l'abonnement que vous possédez déjà.</p>
+        </details>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap">
+    <section>
+      <div class="final-cta reveal">
+        <h2>Votre premier site commence maintenant</h2>
+        <p>L'IA ne remplace pas le créateur — elle lui donne de nouveaux outils. À vous de les utiliser.</p>
+        <a href="#offre" class="btn btn-primary">Obtenir la formation →</a>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <p>© 2026 · Créer des sites web avec l'IA — Formation numérique</p>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  var canvas = document.getElementById('particles');
+  var ctx = canvas.getContext('2d');
+  var W,H,DPR,particles=[];
+  var colors=['124,58,237','168,85,247','192,132,252'];
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio||1,2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    canvas.style.width=W+'px'; canvas.style.height=H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  function init(){
+    var count = W<720?36:70;
+    particles=[];
+    for(var i=0;i<count;i++){
+      particles.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16,r:Math.random()*1.5+1,c:colors[i%colors.length]});
+    }
+  }
+  resize(); init();
+  window.addEventListener('resize', function(){ resize(); init(); });
+  var linkDist = W<720?100:140;
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<particles.length;i++){
+      var p=particles[i];
+      if(!reduced){p.x+=p.vx;p.y+=p.vy;}
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    }
+    for(var i=0;i<particles.length;i++)for(var j=i+1;j<particles.length;j++){
+      var a=particles[i],b=particles[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<linkDist){
+        ctx.strokeStyle='rgba('+a.c+','+((1-d/linkDist)*.2)+')';
+        ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      }
+    }
+    for(var i=0;i<particles.length;i++){
+      var p=particles[i];
+      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);
+      g.addColorStop(0,'rgba('+p.c+',0.9)'); g.addColorStop(1,'rgba('+p.c+',0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*5,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba('+p.c+',0.9)'; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('in'); });
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
